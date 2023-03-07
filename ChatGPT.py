@@ -1,39 +1,34 @@
 #!/usr/bin/env python3
+#
+# Author: Sagar Biswas (sagar040)
+#
+# https://github.com/sagar040/chatGPT
+#
+# Version 2.0
 
-import os
-import sys
-import openai
-from pygments import highlight
 from pygments.lexers import get_lexer_by_name
 from pygments.formatters import Terminal256Formatter
+from pygments import highlight
+import style.banner as banner
+import style.ColorCode as c
+import Core.process as ps
+import readline
+import openai
+import sys
+import os
 
 try:
     import api.conf as conf
 except ModuleNotFoundError:
-    print("\033[31mrun setup.sh first !\033[0m")
+    print("run setup.sh first !")
     sys.exit(1)
-    
 
-banner = """\033[34;1m
-      _           _    ____ ____ _____ 
-  ___| |__   __ _| |_ / ___|  _ \\_   _|
- / __| '_ \\ / _` | __| |  _| |_) || |  
-| (__| | | | (_| | |_| |_| |  __/ | |  
- \\___|_| |_|\\__,_|\\__|\\____|_|    |_|  
-                                       \033[0m"""
+banner.print_banner()
 
-Msg_clear_screen = "\n\033[33mclear\033[0m - clear the screen"
-Msg_save = "\n\033[33msave\033[0m - save the current output"
-Msg_exit = "\n\033[33mCTRL+C\033[0m - exit the program"
-
-API_KEY = conf.key
-
-def run(key,quarry):
-    openai.api_key = key
-    
+def api(text):
     completions = openai.Completion.create(
     engine="text-davinci-002",
-    prompt=quarry,
+    prompt=text,
     max_tokens=1024,
     n=1,
     stop=None,
@@ -41,39 +36,52 @@ def run(key,quarry):
     )
     return completions.choices[0].text
 
-def save(data):
-    with open("output.txt","w") as f:
-        f.write(data)
+
+def prompt():
+    while True:
+        try:
+            text = input(f"{c.ul}ChatGPT{c.e} > ")
+            print(c.e)
+            if text == "help":
+                ps.help_menu()
+            
+            elif text == "clear":
+                os.system("clear")
+            
+            elif text == ("save"):
+                try:
+                    ps.save(text,resp)
+                except UnboundLocalError:
+                    print(f"{c.r}E:{c.e} Nothing to save")
+            
+            elif text == "exit":
+                sys.exit(0)
+            
+            elif not text:
+                pass
+            
+            else:
+                try:
+                    resp = api(text)
+                    
+                    final_syntax = ps.syntax(text)
+                    
+                    if final_syntax == "text":
+                        final_syntax = ps.syntax(resp)
+                    
+                    print(f'{highlight(resp, lexer=get_lexer_by_name(final_syntax), formatter=Terminal256Formatter(style="monokai"))}')
+                
+                except openai.error.AuthenticationError as e :
+                    print(f"{c.r}E:{c.e} {e}")
+        
+        except KeyboardInterrupt:
+            print(f"{c.r}Exit..{c.e}")
+            sys.exit(1)
 
 
-def search_language(text):
-  languages = ["c++", "c#", "css", "html", "javascript", "json", "python", "sql", "xml", "php", "java", "bash", "sh", "powershell", "go"]
-  for language in languages:
-    if language in text:
-      return language
-  return "text"
+openai.api_key = conf.key
 
-
-print(banner, Msg_clear_screen, Msg_save, Msg_exit, "\n")
-
-while True:
-    try:
-        you = input("\033[32;1m>>\033[0m ")
-        if you == "clear":
-            os.system("clear")
-        elif you == "save":
-            save(output)
-            print("[ output is saved in 'output.txt' file ]\n")
-        elif you == "":
-            pass
-        else:
-            try:
-                output = run(API_KEY,you)
-                syntax = search_language(you)
-                print(f'\n{highlight(output, lexer=get_lexer_by_name(syntax), formatter=Terminal256Formatter(style="monokai"))}')
-            except openai.error.AuthenticationError as e :
-                print(f"\033[31;1mE:\033[0m {e}")
-                print("run setup.sh file to set api key")
-    except KeyboardInterrupt:
-        print("\n\033[31;1mBye..!\033[0m")
-        break
+if openai.api_key:
+    prompt()
+else:
+    print(f"{c.r}E:{c.e} API key not set, run setup.sh file.")
