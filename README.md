@@ -3,7 +3,7 @@
 chatGPT api with Syntax highlighting (OpenAI). interact with ChatGPT from your terminal.
 
 
-<img src="https://sagar040.github.io/archives/data/ChatGPT/ChatGPT_v2.0.gif" alt="chatGPT gif" width="70%" height="auto" />
+<img src="https://sagar040.github.io/archives/data/ChatGPT/ChatGPT_v2.0.gif" alt="chatGPT gif" width="auto" height="auto" />
 
 ## Install requirements
 ```bash
