@@ -23,3 +23,5 @@ sudo pip3 install -r requirements.txt
 ```bash
 python3 ChatGPT.py
 ```
+
+<img src="https://sagar040.github.io/archives/data/ChatGPT/chat.tcp_socket_in_php.png" alt="tcp socket in php" width="auto" height="auto" />
