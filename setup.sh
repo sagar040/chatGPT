@@ -26,7 +26,7 @@ if [ -f $api_conf ]; then
         echo "-- old api keys are stored at '$dir_api/.backup'"
         echo -e "-- creating $api_conf\n"
         touch $api_conf
-        echo -e -n "\033[35mEnter your api key:\033[33;5m "
+        echo -e -n "\033[35mEnter your api key:\033[33m "
         read key;
         echo -e -n "\033[0m"
         echo -n "IyBhcGkgY29uZmlndXJhdGlvbgojIGFkZCB5b3VyIGFwaSBrZXkgaGVyZQojIGtleSA9ICcnCg==" | base64 -d > $api_conf
@@ -41,7 +41,7 @@ if [ -f $api_conf ]; then
 else
     mkdir $dir_api
     touch $api_conf
-    echo -e -n "\033[35mEnter your api key:\033[33;5m "
+    echo -e -n "\033[35mEnter your api key:\033[33m "
     read key;
     echo -e -n "\033[0m"
     echo -n "IyBhcGkgY29uZmlndXJhdGlvbgojIGFkZCB5b3VyIGFwaSBrZXkgaGVyZQojIGtleSA9ICcnCg==" | base64 -d > $api_conf
